@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Géolocalisation</title>
     <style>
-        /* Global Styles */
         body {
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(to right, #00c6ff, #0072ff);
@@ -64,7 +63,6 @@
             opacity: 0.8;
         }
 
-        /* Button styles */
         button {
             background-color: #fff;
             color: #0072ff;
@@ -110,13 +108,11 @@
     </div>
 
     <script>
-        // Fonction pour formater la date à partir du timestamp
         function formatDate(timestamp) {
             const date = new Date(timestamp);
             return date.toLocaleString();
         }
 
-        // getCurrentPosition() pour la position actuelle
         function getCurrentPosition() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -134,7 +130,6 @@
             }
         }
 
-        // watchPosition() pour les mises à jour en temps réel
         function watchPosition() {
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(function(position) {
@@ -150,7 +145,6 @@
             }
         }
 
-        // Appel des fonctions
         getCurrentPosition();
         watchPosition();
     </script>

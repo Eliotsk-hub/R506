@@ -1,69 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exercices Git</title>
+    <title>R506 - Sensibilisation à la prog</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-        }
-        h1 {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
             text-align: center;
         }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
         ul {
             list-style-type: none;
             padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
         }
+
         li {
-            margin: 10px 0;
+            margin: 15px 0;
+            transition: all 0.3s ease;
         }
+
+        li:hover {
+            transform: translateY(-3px);
+        }
+
         a {
             text-decoration: none;
-            color: #333;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            display: inline-block;
+            color: #007BFF;
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #007BFF;
+            border-radius: 8px;
+            display: block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
+
         a:hover {
-            background-color: #f0f0f0;
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            a {
+                font-size: 1rem;
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>R506 - Sensibilisation à la prog</h1>
-    <ul id="exercise-list">
+    <div id="content">
         <!-- JavaScript will insert exercise links here -->
-    </ul>
+    </div>
 
     <script>
-        // Array of exercise folders, update this array if you add more folders
+        // Tableau des exercices dans chaque CartoTD
         const exercises = [
-            { name: 'CartoTD1', url: './CartoTD1/index.html' },
-            { name: 'CartoTD2', url: './CartoTD2/index.html' },
-            // Add more exercises as needed
+            {
+                category: 'CartoTD1',
+                exercises: [
+                    { name: 'Exo1', url: './CartoTD1/Exo1/index.html' },
+                    { name: 'Exo2', url: './CartoTD1/Exo2/index.html' },
+                    // Ajoutez plus d'exercices ici si nécessaire
+                ]
+            },
+            {
+                category: 'CartoTD2',
+                exercises: [
+                    { name: 'Exo1', url: './CartoTD2/Exo1/index.html' },
+                    { name: 'Exo2', url: './CartoTD2/Exo2/index.html' },
+                    // Ajoutez plus d'exercices ici si nécessaire
+                ]
+            },
+            // Ajoutez ici plus de CartoTD et d'exercices si nécessaire
         ];
 
-        // Get the list element
-        const list = document.getElementById('exercise-list');
+        // Fonction pour générer la liste des exercices
+        function generateExerciseList() {
+            const contentDiv = document.getElementById('content');
 
-        // Loop through the exercises array and create list items
-        exercises.forEach(exercise => {
-            // Create the list item
-            const listItem = document.createElement('li');
-            
-            // Create the link
-            const link = document.createElement('a');
-            link.href = exercise.url;
-            link.textContent = exercise.name;
+            exercises.forEach(td => {
+                // Créer un titre pour chaque catégorie (ex: CartoTD1, CartoTD2)
+                const categoryTitle = document.createElement('h2');
+                categoryTitle.textContent = td.category;
+                contentDiv.appendChild(categoryTitle);
 
-            // Add the link to the list item
-            listItem.appendChild(link);
+                // Créer une liste d'exercices
+                const exerciseList = document.createElement('ul');
+                
+                td.exercises.forEach(exercise => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = exercise.url;
+                    link.textContent = exercise.name;
+                    listItem.appendChild(link);
+                    exerciseList.appendChild(listItem);
+                });
 
-            // Add the list item to the list
-            list.appendChild(listItem);
-        });
+                // Ajouter la liste des exercices au contenu
+                contentDiv.appendChild(exerciseList);
+            });
+        }
+
+        // Appel de la fonction pour générer la liste des exercices
+        generateExerciseList();
     </script>
 </body>
 </html>
