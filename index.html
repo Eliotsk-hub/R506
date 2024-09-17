@@ -4,76 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>R506 - Sensibilisation à la prog</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to right, #00c6ff, #0072ff);
-            color: #fff;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        li {
-            margin: 15px 0;
-            transition: all 0.3s ease;
-        }
-
-        li:hover {
-            transform: translateY(-3px);
-        }
-
-        a {
-            text-decoration: none;
-            color: #007BFF;
-            background-color: #fff;
-            padding: 15px;
-            border: 1px solid #007BFF;
-            border-radius: 8px;
-            display: block;
-            font-size: 1.2rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        a:hover {
-            background-color: #007BFF;
-            color: #fff;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            color: #333;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            a {
-                font-size: 1rem;
-                padding: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>R506 - Sensibilisation à la prog</h1>
-    <div id="content">
+    <div id="container">
+        <h1>R506 - Sensibilisation à la prog</h1>
+        <div id="content" class="section">
+        </div>
     </div>
 
     <script>
@@ -98,22 +35,71 @@
             const contentDiv = document.getElementById('content');
 
             exercises.forEach(td => {
-                const categoryTitle = document.createElement('h2');
+                const categoryDiv = document.createElement('div');
+                categoryDiv.style.marginBottom = '20px';
+
+                const categoryTitle = document.createElement('button');
                 categoryTitle.textContent = td.category;
-                contentDiv.appendChild(categoryTitle);
+                categoryTitle.style.backgroundColor = '#0072ff';
+                categoryTitle.style.color = '#fff';
+                categoryTitle.style.border = 'none';
+                categoryTitle.style.padding = '10px';
+                categoryTitle.style.borderRadius = '8px';
+                categoryTitle.style.fontSize = '1.5rem';
+                categoryTitle.style.cursor = 'pointer';
+                categoryTitle.style.display = 'block';
+                categoryTitle.style.width = '100%';
+                categoryTitle.style.marginBottom = '10px';
 
                 const exerciseList = document.createElement('ul');
-                
+                exerciseList.style.listStyleType = 'none';
+                exerciseList.style.padding = '0';
+                exerciseList.style.display = 'none'; 
+
                 td.exercises.forEach(exercise => {
                     const listItem = document.createElement('li');
+                    listItem.style.margin = '10px 0';
+
                     const link = document.createElement('a');
                     link.href = exercise.url;
                     link.textContent = exercise.name;
+
+                    link.style.textDecoration = 'none';
+                    link.style.color = '#0072ff';
+                    link.style.backgroundColor = '#fff';
+                    link.style.padding = '10px';
+                    link.style.border = '1px solid #0072ff';
+                    link.style.borderRadius = '8px';
+                    link.style.display = 'inline-block';
+                    link.style.fontSize = '1.2rem';
+                    link.style.fontWeight = 'bold';
+                    link.style.transition = 'all 0.3s ease';
+
+                    link.onmouseover = () => {
+                        link.style.backgroundColor = '#0072ff';
+                        link.style.color = '#fff';
+                    };
+                    link.onmouseout = () => {
+                        link.style.backgroundColor = '#fff';
+                        link.style.color = '#0072ff';
+                    };
+
                     listItem.appendChild(link);
                     exerciseList.appendChild(listItem);
                 });
 
-                contentDiv.appendChild(exerciseList);
+                categoryTitle.addEventListener('click', () => {
+                    if (exerciseList.style.display === 'none') {
+                        exerciseList.style.display = 'block';
+                    } else {
+                        exerciseList.style.display = 'none';
+                    }
+                });
+
+                categoryDiv.appendChild(categoryTitle);
+                categoryDiv.appendChild(exerciseList);
+
+                contentDiv.appendChild(categoryDiv);
             });
         }
 

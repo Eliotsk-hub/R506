@@ -1,0 +1,111 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+#container {
+    background: #ffffff20;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+.section {
+    margin: 20px 0;
+    background: #ffffff10;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+p {
+    font-size: 1.1rem;
+    margin: 10px 0;
+}
+
+span {
+    font-weight: bold;
+}
+
+.footer {
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: #fff;
+    opacity: 0.8;
+}
+
+button {
+    background-color: #fff;
+    color: #0072ff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0072ff;
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    #container {
+        padding: 20px;
+    }
+
+    p {
+        font-size: 1rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+    }
+}
+
+/* Media query pour orientation paysage */
+@media (orientation: landscape) {
+    body {
+        flex-direction: row;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    #container {
+        padding: 20px;
+        max-width: 800px; /* Augmenter la largeur dans l'orientation paysage */
+    }
+
+    p {
+        font-size: 1rem;
+    }
+}
