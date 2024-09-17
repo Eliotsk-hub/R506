@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercices Git</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        a:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>R506 - Sensibilisation à la prog</h1>
+    <ul id="exercise-list">
+        <!-- JavaScript will insert exercise links here -->
+    </ul>
+
+    <script>
+        // Array of exercise folders, update this array if you add more folders
+        const exercises = [
+            { name: 'CartoTD1', url: './CartoTD1/index.html' },
+            { name: 'CartoTD2', url: './CartoTD2/index.html' },
+            // Add more exercises as needed
+        ];
+
+        // Get the list element
+        const list = document.getElementById('exercise-list');
+
+        // Loop through the exercises array and create list items
+        exercises.forEach(exercise => {
+            // Create the list item
+            const listItem = document.createElement('li');
+            
+            // Create the link
+            const link = document.createElement('a');
+            link.href = exercise.url;
+            link.textContent = exercise.name;
+
+            // Add the link to the list item
+            listItem.appendChild(link);
+
+            // Add the list item to the list
+            list.appendChild(listItem);
+        });
+    </script>
+</body>
+</html>
