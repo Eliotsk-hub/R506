@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Géolocalisation</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        #container {
+            background: #ffffff20;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .section {
+            margin: 20px 0;
+            background: #ffffff10;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+
+        span {
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #fff;
+            opacity: 0.8;
+        }
+
+        /* Button styles */
+        button {
+            background-color: #fff;
+            color: #0072ff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0072ff;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Test de Géolocalisation</h1>
+        <div class="section">
+            <h2>Position actuelle</h2>
+            <p>Latitude: <span id="latitude"></span></p>
+            <p>Longitude: <span id="longitude"></span></p>
+            <p>Altitude: <span id="altitude"></span></p>
+            <p>Précision: <span id="precision"></span></p>
+            <p>Vitesse: <span id="speed"></span></p>
+            <p>Date: <span id="date"></span></p>
+        </div>
+        <div class="section">
+            <h2>Position en temps réel</h2>
+            <p>Latitude: <span id="latitude-watch"></span></p>
+            <p>Longitude: <span id="longitude-watch"></span></p>
+            <p>Altitude: <span id="altitude-watch"></span></p>
+            <p>Précision: <span id="precision-watch"></span></p>
+            <p>Vitesse: <span id="speed-watch"></span></p>
+            <p>Date: <span id="date-watch"></span></p>
+        </div>
+        <div class="footer">
+            <p>Veuillez autoriser la géolocalisation pour voir les résultats.</p>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour formater la date à partir du timestamp
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString();
+        }
+
+        // getCurrentPosition() pour la position actuelle
+        function getCurrentPosition() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('latitude').textContent = position.coords.latitude;
+                    document.getElementById('longitude').textContent = position.coords.longitude;
+                    document.getElementById('altitude').textContent = position.coords.altitude || 'N/A';
+                    document.getElementById('precision').textContent = position.coords.accuracy + ' mètres';
+                    document.getElementById('speed').textContent = position.coords.speed || 'N/A';
+                    document.getElementById('date').textContent = formatDate(position.timestamp);
+                }, function(error) {
+                    alert('Erreur lors de la récupération de la position: ' + error.message);
+                });
+            } else {
+                alert('La géolocalisation n\'est pas supportée par votre navigateur.');
+            }
+        }
+
+        // watchPosition() pour les mises à jour en temps réel
+        function watchPosition() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(function(position) {
+                    document.getElementById('latitude-watch').textContent = position.coords.latitude;
+                    document.getElementById('longitude-watch').textContent = position.coords.longitude;
+                    document.getElementById('altitude-watch').textContent = position.coords.altitude || 'N/A';
+                    document.getElementById('precision-watch').textContent = position.coords.accuracy + ' mètres';
+                    document.getElementById('speed-watch').textContent = position.coords.speed || 'N/A';
+                    document.getElementById('date-watch').textContent = formatDate(position.timestamp);
+                }, function(error) {
+                    alert('Erreur lors de la mise à jour de la position: ' + error.message);
+                });
+            }
+        }
+
+        // Appel des fonctions
+        getCurrentPosition();
+        watchPosition();
+    </script>
+</body>
+</html>
