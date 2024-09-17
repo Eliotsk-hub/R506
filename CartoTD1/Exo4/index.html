@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Événements Tactiles et Dessin</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 2px solid #fff;
+            background-color: #ffffff10;
+            border-radius: 8px;
+            touch-action: none; /* Important for preventing default scrolling behavior */
+        }
+
+        .info, .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        button {
+            background-color: #fff;
+            color: #0072ff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0072ff;
+            color: #fff;
+        }
+
+        select, input[type="color"], input[type="range"] {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            margin: 5px;
+            width: 100%;
+        }
+
+        @media (min-width: 600px) {
+            canvas {
+                width: 600px;
+                height: 600px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .controls {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            select, input[type="color"], input[type="range"], button {
+                width: auto;
+                margin: 10px;
+            }
+        }
+
+        @media (max-width: 599px) {
+            canvas {
+                width: 90vw;
+                height: 90vw;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Tester les événements tactiles et Dessiner</h1>
+
+        <!-- Canvas pour dessiner avec les touch events -->
+        <canvas id="drawingCanvas"></canvas>
+
+        <div class="controls">
+            <label for="colorPicker">Couleur : </label>
+            <input type="color" id="colorPicker" value="#ffffff">
+            
+            <label for="brushSize">Taille du pinceau : </label>
+            <input type="range" id="brushSize" min="1" max="10" value="3">
+
+            <button id="clearButton">Effacer le dessin</button>
+        </div>
+
+        <div class="info">
+            <p>Type d'événement: <span id="eventType">Aucun</span></p>
+            <p>Position X: <span id="touchX">0</span></p>
+            <p>Position Y: <span id="touchY">0</span></p>
+        </div>
+
+        <div class="footer">
+            <p>Touchez l'écran pour dessiner. Utilisez votre doigt ou la souris pour dessiner en temps réel.</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        // DOM elements pour afficher les informations des touch events
+        const eventTypeDisplay = document.getElementById('eventType');
+        const touchXDisplay = document.getElementById('touchX');
+        const touchYDisplay = document.getElementById('touchY');
+
+        // Options de dessin
+        const colorPicker = document.getElementById('colorPicker');
+        const brushSize = document.getElementById('brushSize');
+        let lastX = 0;
+        let lastY = 0;
+
+        // Fonction pour adapter la taille du canvas en fonction de l'écran
+        function resizeCanvas() {
+            if (window.innerWidth < 600) {
+                canvas.width = Math.min(window.innerWidth * 0.9, 400);
+                canvas.height = Math.min(window.innerWidth * 0.9, 400);
+            } else {
+                canvas.width = 600;
+                canvas.height = 600;
+            }
+        }
+
+        // Fonction pour commencer à dessiner
+        function startDrawing(event) {
+            isDrawing = true;
+            const touch = event.touches ? event.touches[0] : event;
+            lastX = touch.clientX - canvas.offsetLeft;
+            lastY = touch.clientY - canvas.offsetTop;
+            updateTouchInfo(event, 'touchstart');
+        }
+
+        // Fonction pour dessiner lorsque le doigt bouge ou la souris bouge sur le canvas
+        function draw(event) {
+            if (!isDrawing) return;
+            const touch = event.touches ? event.touches[0] : event;
+            const currentX = touch.clientX - canvas.offsetLeft;
+            const currentY = touch.clientY - canvas.offsetTop;
+
+            // Dessiner une ligne entre les points
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.strokeStyle = colorPicker.value;
+            ctx.lineWidth = brushSize.value;
+            ctx.stroke();
+
+            lastX = currentX;
+            lastY = currentY;
+
+            updateTouchInfo(event, 'touchmove');
+        }
+
+        // Fonction pour arrêter le dessin
+        function stopDrawing(event) {
+            isDrawing = false;
+            updateTouchInfo(event, 'touchend');
+        }
+
+        // Fonction pour mettre à jour l'affichage des informations touch
+        function updateTouchInfo(event, type) {
+            eventTypeDisplay.textContent = type;
+            const touch = event.touches ? event.touches[0] : event;
+            touchXDisplay.textContent = touch.clientX;
+            touchYDisplay.textContent = touch.clientY;
+        }
+
+        // Fonction pour effacer le dessin
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Ajouter les écouteurs d'événements tactiles et de souris
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Clear button functionality
+        const clearButton = document.getElementById('clearButton');
+        clearButton.addEventListener('click', clearCanvas);
+
+        // Redimensionner le canvas en fonction de l'écran
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+    </script>
+</body>
+</html>
