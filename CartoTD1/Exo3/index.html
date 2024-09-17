@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orientation et Mouvement du Smartphone</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        .section {
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        span {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Orientation et Mouvement du Smartphone</h1>
+
+    <div class="section">
+        <h2>Orientation (alpha, beta, gamma)</h2>
+        <p>Alpha (z-axis): <span id="alpha">0</span>°</p>
+        <p>Beta (x-axis): <span id="beta">0</span>°</p>
+        <p>Gamma (y-axis): <span id="gamma">0</span>°</p>
+    </div>
+
+    <div class="section">
+        <h2>Mouvement (accélération et rotation)</h2>
+        <p>Accélération X: <span id="acceleration-x">0</span> m/s²</p>
+        <p>Accélération Y: <span id="acceleration-y">0</span> m/s²</p>
+        <p>Accélération Z: <span id="acceleration-z">0</span> m/s²</p>
+        <p>Rotation alpha: <span id="rotation-alpha">0</span>°/s</p>
+        <p>Rotation beta: <span id="rotation-beta">0</span>°/s</p>
+        <p>Rotation gamma: <span id="rotation-gamma">0</span>°/s</p>
+    </div>
+
+    <script>
+        window.addEventListener('deviceorientation', function(event) {
+            document.getElementById('alpha').textContent = event.alpha.toFixed(2);
+            document.getElementById('beta').textContent = event.beta.toFixed(2);
+            document.getElementById('gamma').textContent = event.gamma.toFixed(2);
+        });
+
+        window.addEventListener('devicemotion', function(event) {
+            
+            const acc = event.acceleration;
+            document.getElementById('acceleration-x').textContent = acc.x ? acc.x.toFixed(2) : '0';
+            document.getElementById('acceleration-y').textContent = acc.y ? acc.y.toFixed(2) : '0';
+            document.getElementById('acceleration-z').textContent = acc.z ? acc.z.toFixed(2) : '0';
+
+            
+            const rotation = event.rotationRate;
+            document.getElementById('rotation-alpha').textContent = rotation.alpha ? rotation.alpha.toFixed(2) : '0';
+            document.getElementById('rotation-beta').textContent = rotation.beta ? rotation.beta.toFixed(2) : '0';
+            document.getElementById('rotation-gamma').textContent = rotation.gamma ? rotation.gamma.toFixed(2) : '0';
+        });
+    </script>
+</body>
+</html>

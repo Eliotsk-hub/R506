@@ -125,21 +125,18 @@
     </div>
 
     <script>
-        // Fonction pour formater la date à partir du timestamp
         function formatDate(timestamp) {
             const date = new Date(timestamp);
             return date.toLocaleString();
         }
 
-        // Fonction pour afficher la position actuelle
         function getCurrentPosition() {
             if (navigator.geolocation) {
-                // Options pour la géolocalisation (augmentation de la fréquence de rafraîchissement)
                 const options = {
-                    enableHighAccuracy: true, // Utilise des méthodes plus précises si possible
-                    timeout: 5000, // Maximum de 5 secondes pour obtenir la localisation
-                    maximumAge: 0 // Ne pas utiliser de position mise en cache
-                };
+                    enableHighAccuracy: true, 
+                    timeout: 5000, 
+                    maximumAge: 0 
+                  };
                 
                 navigator.geolocation.getCurrentPosition(function(position) {
                     document.getElementById('latitude').textContent = position.coords.latitude;
@@ -156,14 +153,12 @@
             }
         }
 
-        // Fonction pour afficher les positions en temps réel
         function watchPosition() {
             if (navigator.geolocation) {
-                // Options pour surveiller la position avec une fréquence élevée
                 const options = {
-                    enableHighAccuracy: true, // Utilise des méthodes plus précises si possible
-                    timeout: 5000, // Maximum de 5 secondes entre chaque update
-                    maximumAge: 0 // Ne pas utiliser de position mise en cache
+                    enableHighAccuracy: true, 
+                    timeout: 5000, 
+                    maximumAge: 0 
                 };
                 
                 navigator.geolocation.watchPosition(function(position) {
@@ -179,7 +174,6 @@
             }
         }
 
-        // Fonction pour gérer les erreurs de géolocalisation
         function handleGeoError(error) {
             switch (error.code) {
                 case error.PERMISSION_DENIED:
@@ -197,7 +191,6 @@
             }
         }
 
-        // Appel des fonctions
         getCurrentPosition();
         watchPosition();
     </script>

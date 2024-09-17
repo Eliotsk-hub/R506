@@ -74,18 +74,15 @@
 <body>
     <h1>R506 - Sensibilisation à la prog</h1>
     <div id="content">
-        <!-- JavaScript will insert exercise links here -->
     </div>
 
     <script>
-        // Tableau des exercices dans chaque CartoTD
         const exercises = [
             {
                 category: 'CartoTD1',
                 exercises: [
                     { name: 'Exo1', url: './CartoTD1/Exo1/index.html' },
                     { name: 'Exo2', url: './CartoTD1/Exo2/index.html' },
-                    // Ajoutez plus d'exercices ici si nécessaire
                 ]
             },
             {
@@ -93,23 +90,18 @@
                 exercises: [
                     { name: 'Exo1', url: './CartoTD2/Exo1/index.html' },
                     { name: 'Exo2', url: './CartoTD2/Exo2/index.html' },
-                    // Ajoutez plus d'exercices ici si nécessaire
                 ]
             },
-            // Ajoutez ici plus de CartoTD et d'exercices si nécessaire
         ];
 
-        // Fonction pour générer la liste des exercices
         function generateExerciseList() {
             const contentDiv = document.getElementById('content');
 
             exercises.forEach(td => {
-                // Créer un titre pour chaque catégorie (ex: CartoTD1, CartoTD2)
                 const categoryTitle = document.createElement('h2');
                 categoryTitle.textContent = td.category;
                 contentDiv.appendChild(categoryTitle);
 
-                // Créer une liste d'exercices
                 const exerciseList = document.createElement('ul');
                 
                 td.exercises.forEach(exercise => {
@@ -121,12 +113,10 @@
                     exerciseList.appendChild(listItem);
                 });
 
-                // Ajouter la liste des exercices au contenu
                 contentDiv.appendChild(exerciseList);
             });
         }
 
-        // Appel de la fonction pour générer la liste des exercices
         generateExerciseList();
     </script>
 </body>
