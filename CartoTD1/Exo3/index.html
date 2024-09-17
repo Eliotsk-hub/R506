@@ -10,14 +10,16 @@
     <div id="container">
         <h1>Orientation et Mouvement du Smartphone</h1>
 
-        <div class="section">
+        <button id="enableMotion" style="padding: 10px 20px; font-size: 1rem;">Activer l'Orientation et le Mouvement</button>
+
+        <div class="section" id="orientation-section" style="display:none;">
             <h2>Orientation (alpha, beta, gamma)</h2>
             <p>Alpha (z-axis): <span id="alpha">0</span>°</p>
             <p>Beta (x-axis): <span id="beta">0</span>°</p>
             <p>Gamma (y-axis): <span id="gamma">0</span>°</p>
         </div>
 
-        <div class="section">
+        <div class="section" id="motion-section" style="display:none;">
             <h2>Mouvement (accélération et rotation)</h2>
             <p>Accélération X: <span id="acceleration-x">0</span> m/s²</p>
             <p>Accélération Y: <span id="acceleration-y">0</span> m/s²</p>
@@ -33,27 +35,56 @@
     </div>
 
     <script>
-        // Écouteur pour l'orientation de l'appareil (alpha, beta, gamma)
-        window.addEventListener('deviceorientation', function(event) {
-            document.getElementById('alpha').textContent = event.alpha.toFixed(2);
-            document.getElementById('beta').textContent = event.beta.toFixed(2);
-            document.getElementById('gamma').textContent = event.gamma.toFixed(2);
+        const enableMotionButton = document.getElementById('enableMotion');
+        const orientationSection = document.getElementById('orientation-section');
+        const motionSection = document.getElementById('motion-section');
+
+        // Event listener to enable device motion and orientation on iOS
+        enableMotionButton.addEventListener('click', () => {
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission()
+                .then(permissionState => {
+                    if (permissionState === 'granted') {
+                        startTracking();
+                    } else {
+                        alert("Permission to access motion and orientation was denied.");
+                    }
+                })
+                .catch(console.error);
+            } else {
+                // Non-iOS devices don't need permission
+                startTracking();
+            }
         });
 
-        // Écouteur pour le mouvement de l'appareil (accélération et rotation)
-        window.addEventListener('devicemotion', function(event) {
-            // Accélération
-            const acc = event.acceleration;
-            document.getElementById('acceleration-x').textContent = acc.x ? acc.x.toFixed(2) : '0';
-            document.getElementById('acceleration-y').textContent = acc.y ? acc.y.toFixed(2) : '0';
-            document.getElementById('acceleration-z').textContent = acc.z ? acc.z.toFixed(2) : '0';
+        function startTracking() {
+            // Show the sections
+            orientationSection.style.display = 'block';
+            motionSection.style.display = 'block';
+            enableMotionButton.style.display = 'none';
 
-            // Rotation
-            const rotation = event.rotationRate;
-            document.getElementById('rotation-alpha').textContent = rotation.alpha ? rotation.alpha.toFixed(2) : '0';
-            document.getElementById('rotation-beta').textContent = rotation.beta ? rotation.beta.toFixed(2) : '0';
-            document.getElementById('rotation-gamma').textContent = rotation.gamma ? rotation.gamma.toFixed(2) : '0';
-        });
+            // Device Orientation tracking (alpha, beta, gamma)
+            window.addEventListener('deviceorientation', function(event) {
+                document.getElementById('alpha').textContent = event.alpha.toFixed(2);
+                document.getElementById('beta').textContent = event.beta.toFixed(2);
+                document.getElementById('gamma').textContent = event.gamma.toFixed(2);
+            });
+
+            // Device Motion tracking (acceleration and rotation)
+            window.addEventListener('devicemotion', function(event) {
+                // Acceleration
+                const acc = event.acceleration;
+                document.getElementById('acceleration-x').textContent = acc.x ? acc.x.toFixed(2) : '0';
+                document.getElementById('acceleration-y').textContent = acc.y ? acc.y.toFixed(2) : '0';
+                document.getElementById('acceleration-z').textContent = acc.z ? acc.z.toFixed(2) : '0';
+
+                // Rotation
+                const rotation = event.rotationRate;
+                document.getElementById('rotation-alpha').textContent = rotation.alpha ? rotation.alpha.toFixed(2) : '0';
+                document.getElementById('rotation-beta').textContent = rotation.beta ? rotation.beta.toFixed(2) : '0';
+                document.getElementById('rotation-gamma').textContent = rotation.gamma ? rotation.gamma.toFixed(2) : '0';
+            });
+        }
     </script>
 </body>
 </html>
