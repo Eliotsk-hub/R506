@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice 2 - Leaflet Plus</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .footer-info {
+            margin-bottom: 10px;
+        }
+
+        p {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exercice 2 : Leaflet Plus</h1>
+    <div id="map"></div>
+
+    <footer>
+        <div class="footer-info" id="user-location">Votre position : en attente de géolocalisation...</div>
+        <div class="footer-info" id="distance-info">Distance entre Marseille et votre position : en attente...</div>
+        <div class="footer-info" id="accuracy-info">Précision estimée : en attente...</div>
+    </footer>
+
+    <script>
+        // Initialiser la carte avec la carte CartoDB Positron
+        const map = L.map('map').setView([43.7102, 7.2620], 7); // Coordonnées de Nice
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+}).addTo(map);
+
+
+        // Définir les coordonnées du triangle des Bermudes
+        const bermudaTriangleCoords = [
+            [25.774, -80.19],  // Miami
+            [18.466, -66.118], // Puerto Rico
+            [32.321, -64.757]  // Bermuda
+        ];
+
+        // Ajouter le polygone du triangle des Bermudes en rouge
+        const bermudaTriangle = L.polygon(bermudaTriangleCoords, {color: 'red'}).addTo(map)
+            .bindPopup('Triangle des Bermudes');
+
+        // Ajouter un marqueur sur Nice
+        L.marker([43.7102, 7.2620]).addTo(map)
+            .bindPopup('Nice, Centre Ville');
+
+        // Ajouter un marqueur sur Marseille
+        const marseilleCoords = [43.2965, 5.3698];
+        const marseilleMarker = L.marker(marseilleCoords).addTo(map)
+            .bindPopup('Marseille, Centre Ville');
+
+        // Eléments du footer
+        const userLocationDiv = document.getElementById('user-location');
+        const distanceInfoDiv = document.getElementById('distance-info');
+        const accuracyInfoDiv = document.getElementById('accuracy-info');
+
+        // Récupérer la géolocalisation de l'utilisateur
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+                const accuracy = position.coords.accuracy;
+
+                // Mettre à jour le footer avec les informations de géolocalisation
+                userLocationDiv.textContent = `Votre position : Latitude ${userLat.toFixed(5)}, Longitude ${userLng.toFixed(5)}`;
+                accuracyInfoDiv.textContent = `Précision estimée : ${accuracy} mètres`;
+
+                // Centrer la carte sur l'utilisateur
+                map.setView([userLat, userLng], 10);
+
+                // Ajouter un cercle pour représenter la précision autour de l'utilisateur
+                L.circle([userLat, userLng], {
+                    color: 'blue',
+                    fillColor: '#30a3ec',
+                    fillOpacity: 0.5,
+                    radius: accuracy  // Rayon basé sur la précision de la géolocalisation
+                }).addTo(map)
+                .bindPopup("Précision estimée : " + accuracy + " mètres");
+
+                // Ajouter un marqueur pour la position de l'utilisateur
+                L.marker([userLat, userLng]).addTo(map)
+                    .bindPopup("Vous êtes ici");
+
+                // Calculer la distance entre Marseille et la position de l'utilisateur
+                const distance = map.distance(marseilleCoords, [userLat, userLng]) / 1000; // Convertir en km
+                distanceInfoDiv.textContent = `Distance entre Marseille et votre position : ${distance.toFixed(2)} km`;
+
+                // Ajouter un segment entre Marseille et Nice
+                L.polyline([marseilleCoords, [43.7102, 7.2620]], {color: 'green'}).addTo(map)
+                    .bindPopup('Segment entre Marseille et Nice');
+
+                // Ajouter un segment entre Marseille et la position de l'utilisateur
+                L.polyline([marseilleCoords, [userLat, userLng]], {color: 'purple'}).addTo(map)
+                    .bindPopup(`Distance entre Marseille et votre position : ${distance.toFixed(2)} km`);
+
+            }, function (error) {
+                console.error("Erreur de géolocalisation : ", error);
+            });
+        } else {
+            alert("Votre navigateur ne supporte pas la géolocalisation");
+        }
+    </script>
+</body>
+</html>

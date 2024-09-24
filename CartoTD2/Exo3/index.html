@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice 3 - GeoJSON et Itinéraire avec MapBox</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exercice 3 : GeoJSON et Itinéraire avec MapBox</h1>
+    <div id="map"></div>
+
+    <script>
+        // Initialisation de la carte Leaflet centrée sur Paris (Île-de-France)
+        const map = L.map('map').setView([48.8566, 2.3522], 9); // Coordonnées de Paris
+
+        // Ajouter une couche de tuiles (CartoDB Positron)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://carto.com/attributions">CartoDB</a> contributors'
+        }).addTo(map);
+
+        // Charger les données GeoJSON des départements de France
+        const departementsGeojsonUrl = 'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements.geojson';
+
+        fetch(departementsGeojsonUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Afficher les données GeoJSON des départements sur la carte
+                L.geoJSON(data, {
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties && feature.properties.nom) {
+                            layer.bindPopup(`Département : ${feature.properties.nom}`);
+                        }
+                    },
+                    style: function () {
+                        return { color: "#0072ff", weight: 2 };
+                    }
+                }).addTo(map);
+            })
+            .catch(error => console.error("Erreur lors de la récupération des données GeoJSON des départements :", error));
+
+        // Charger les données GeoJSON des communes d'Île-de-France
+        const communesGeojsonUrl = 'https://geo.api.gouv.fr/communes?codeRegion=93&fields=nom,code,codesPostaux,siren,codeEpci,codeDepartement,codeRegion,population&format=geojson&geometry=centre';
+
+        fetch(communesGeojsonUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Afficher les données GeoJSON des communes sur la carte
+                L.geoJSON(data, {
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties && feature.properties.nom) {
+                            layer.bindPopup(`Commune : ${feature.properties.nom}`);
+                        }
+                    },
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: "#ff7800",
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        });
+                    }
+                }).addTo(map);
+            })
+            .catch(error => console.error("Erreur lors de la récupération des données GeoJSON des communes :", error));
+    </script>
+</body>
+</html>
