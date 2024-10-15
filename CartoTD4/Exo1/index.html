@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Géolocalisation et 3D</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 5, 5).normalize();
+    scene.add(light);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = true; 
+    controls.enablePan = true; 
+    controls.enableRotate = true; 
+
+    const earthGroup = new THREE.Group();
+    scene.add(earthGroup);
+
+    const geometry = new THREE.SphereGeometry(1, 32, 32);  
+    const texture = new THREE.TextureLoader().load('./earth.jpg'); 
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+    const earth = new THREE.Mesh(geometry, material);
+    earthGroup.add(earth); 
+
+    function latLonToCartesian(lat, lon, radius) {
+        const phi = (90 - lat) * (Math.PI / 180);  
+        const theta = (lon + 180) * (Math.PI / 180);  
+
+        const x = -radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.cos(phi);
+        const z = radius * Math.sin(phi) * Math.sin(theta);
+
+        return { x, y, z };
+    }
+
+    navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        const userPosition = latLonToCartesian(lat, lon, 1); 
+
+        const loader = new THREE.GLTFLoader();
+        loader.load('./hand_pointer.glb', (gltf) => {
+            const model = gltf.scene;
+            model.scale.set(0.02, 0.02, 0.02); 
+            model.rotation.z = 140; 
+            model.rotation.y = 75;
+            model.position.set(userPosition.x, userPosition.y, userPosition.z);
+            console.log(userPosition)
+            earthGroup.add(model); 
+        });
+    });
+
+    fetch('https://restcountries.com/v3.1/all')
+        .then(response => response.json())
+        .then(countries => {
+            countries.forEach(country => {
+                const lat = country.latlng[0];  // Latitude
+                const lon = country.latlng[1];  // Longitude
+
+                const position = latLonToCartesian(lat, lon, 1);  
+
+                const flagTexture = new THREE.TextureLoader().load(country.flags.png); 
+                const flagMaterial = new THREE.MeshBasicMaterial({ map: flagTexture });
+
+                const countryFlagGeometry = new THREE.BoxGeometry(0.02, 0.02, 0.02);  
+                const countryFlag = new THREE.Mesh(countryFlagGeometry, flagMaterial);
+
+                countryFlag.position.set(position.x, position.y, position.z);
+                earthGroup.add(countryFlag); 
+            });
+        });
+
+    
+    function animate() {
+        requestAnimationFrame(animate);
+        earthGroup.rotation.y += 0.001;  
+        controls.update();  
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+</script>
+
+</body>
+</html>
